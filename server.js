@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authorSchema from "./api/author.js";
 import bookSchema from "./api/book.js";
+import seedDB from "./seedDb.js"
 
 const server = express();
 const port = 3000;
@@ -9,7 +10,7 @@ server.use(express.json());
 
 const Author = mongoose.model("Author", authorSchema);
 const Book = mongoose.model("Book", bookSchema);
-
+seedDb()
 //add book
 server.post("/api/book", async (request, response) => {
   try {
@@ -18,7 +19,7 @@ server.post("/api/book", async (request, response) => {
       isbn: request.body.isbn,
       genre: request.body.genre,
       grade: request.body.grade,
-      authorId: request.body.authorId,
+      author: request.body.author,
       plot: request.body.plot,
       language: request.body.language,
       pages: request.body.pages,
@@ -61,7 +62,7 @@ server.get("/api/author", async (request, response) => {
 //Get all books
 server.get("/api/book", async (request, response) => {
   try {
-    response.status(200).json(await Book.find());
+    response.status(200).json(await Book.find().populate("authorId"));
   } catch (error) {
     response.status(500).json({ message: "Något gick fel", error: error });
   }

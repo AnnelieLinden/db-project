@@ -6,7 +6,7 @@ const bookSchema = new mongoose.Schema({
   isbn: Number,
   genre: String,
   grade: Number,
-  authorId: String,
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author' },
   plot: String,
   language: String,
   pages: Number,
