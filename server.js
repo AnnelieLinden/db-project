@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authorSchema from "./api/author.js";
 import bookSchema from "./api/book.js";
-import seedDB from "./seedDb.js"
+import seedDB from "./seedDb.js";
 
 const server = express();
 const port = 3000;
@@ -10,7 +10,7 @@ server.use(express.json());
 
 const Author = mongoose.model("Author", authorSchema);
 const Book = mongoose.model("Book", bookSchema);
-seedDb()
+seedDB();
 //add book
 server.post("/api/book", async (request, response) => {
   try {
@@ -60,17 +60,41 @@ server.get("/api/author", async (request, response) => {
   }
 });
 //Get all books
-server.get("/api/book", async (request, response) => {
+/*server.get("/api/book", async (request, response) => {
   try {
-    response.status(200).json(await Book.find().populate("authorId"));
+    response.status(200).json(await Book.find());
   } catch (error) {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
+});*/
+server.get( "/api/book/all", async ( req, res ) => {
+  try {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 5
+    const allBooks = await Book.countDocuments();
+    const totalPages = Math.ceil(allBooks / limit);
+    const books = await Book.find().limit(limit);
+
+    res.status(200).json({
+      books,
+      currentPage: page,
+      totalPages,
+      allBooks
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ett fel inträffade", error });
+  }
 });
+
 //Get a author by Id
 server.get("/api/author/:id", async (request, response) => {
   try {
-    response.status(200).json();
+    const author = await Author.findById(req.params.id);
+    if (!author) {
+      return res.status(404).json({ message: "Användare hittades inte" });
+    }
+    res.json(author);
   } catch (error) {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
@@ -78,7 +102,7 @@ server.get("/api/author/:id", async (request, response) => {
 //Uppgift 1:4, hitta specfika fields
 server.get("/api/book/:id", async (request, response) => {
   if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
-    response.status(400).json({message: "Felaktigt id"})
+    response.status(400).json({ message: "Felaktigt id" });
   }
   try {
     const book = await Book.findById(request.params.id, request.query.fields);
@@ -94,21 +118,74 @@ server.get("/api/book/:id", async (request, response) => {
   }
 });
 
+server.put("/api/author/:id", async (req, res) => {
+  try {
+    const updatedAuthor = await Author.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (!updatedAuthor) {
+      return res.status(404).json({ message: "Användare hittades inte" });
+    }
+    res.json(updatedAuthor);
+  } catch (error) {
+    res.status(500).json({
+      message: "Ett fel uppstod på servern vid uppdatering av användare.",
+    });
+  }
+});
+server.put("/api/book/:id", async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Användare hittades inte" });
+    }
+    res.json(updatedBook);
+  } catch (error) {
+    res.status(500).json({
+      message: "Ett fel uppstod på servern vid uppdatering av användare.",
+    });
+  }
+});
+
+server.delete("/api/book/:id", async (req, res) => {
+  try {
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    if (!deletedBook) {
+      return res.status(404).json({ message: "Användaren hittades inte" });
+    }
+
+    res.json({ message: "Användaren har raderats!" }); // Bekräftelse på att användaren har raderats.
+  } catch (error) {
+    res.status(500).json({
+      message: "Ett fel uppstod på servern vid radering av användare.",
+    });
+  }
+});
+
+server.delete("/api/author/:id", async (req, res) => {
+  try {
+    const deletedAuthor = await Author.findByIdAndDelete(req.params.id);
+    if (!deletedAuthor) {
+      return res.status(404).json({ message: "Användaren hittades inte" });
+    }
+
+    res.json({ message: "Användaren har raderats!" }); // Bekräftelse på att användaren har raderats.
+  } catch (error) {
+    res.status(500).json({
+      message: "Ett fel uppstod på servern vid radering av användare.",
+    });
+  }
+});
+
 mongoose.connect(
   "mongodb+srv://annelielinden90:Kaeh14281710@cluster0.spbanxe.mongodb.net/"
 );
 server.listen(port, () =>
   console.log(`Listening on port http://localhost:${port}`)
 );
-
-/* id: mongoose.Types.ObjectId.isValid(req.params.id),
-
-Query.prototype.getFilter()
-Returns:
-«Object» current query filter
-Returns the current query filter (also known as conditions) as a POJO.
-
-Example:
-const query = new Query();
-query.find({ a: 1 }).where('b').gt(2);
-query.getFilter(); // { a: 1, b: { $gt: 2 } }*/

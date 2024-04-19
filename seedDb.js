@@ -12,8 +12,7 @@ async function seedDB() {
     mongoose.connect(
       "mongodb+srv://annelielinden90:Kaeh14281710@cluster0.spbanxe.mongodb.net/"
     );
-    const booksList = await createBooks(3);
-    console.log("BooksList - ", booksList);
+    await createBooks(2);
   } catch (error) {
     console.log(`Errormessage: ${error}`);
   }
@@ -22,27 +21,29 @@ async function seedDB() {
 async function createBooks(amount) {
   const authorList = [];
   const bookList = [];
+  const genreList = ['Roman', 'Skräck', 'Barnbok', 'Dokumentär', 'Självbiografi', 'Skönlitteratur', 'Faktabok'];
+  const languageList = ['Svenska', 'Engelska', 'Tyska', 'Danska','Norska'];
   for (let i = 0; i < amount; i++) {
     const newAuthor = new Author({
-      name: faker.internet.fullname()
+      name: faker.person.fullName()
     });
     await newAuthor.save();
     authorList.push(newAuthor);
     const newBook = new Book({
-      title: faker.internet.title(),
+      title: faker.lorem.words({ min: 1, max: 7 }),
       isbn: faker.string.numeric(10),
-      genre: faker.helpers.arrayElements(['Roman', 'Skräck', 'Barnbok', 'Dokumentär', 'Självbiografi', 'Skönlitteratur', 'Faktabok'],1),
+      genre: genreList[faker.number.int(6)],
       grade: faker.number.int({ min: 1, max: 5 }),
       author: newAuthor,
       plot: faker.lorem.paragraph(1),
-      language: faker.helpers.arrayElements(['Svenska', 'Engelska', 'Tyska'],1),
+      language: languageList[faker.number.int(4)],
       pages: faker.number.int({ min: 12, max: 1000 }),
-      year: faker.number.int({ min: 1950, max: 2024 })
-      authorList.push(newAuthor);    
-      bookList.push(newBook);    
+      year: faker.number.int({ min: 1950, max: 2024 }),   
     });
+    await newBook.save();
+    authorList.push(newAuthor),    
+      bookList.push(newBook);  
   }
-  return authorList;
+  return (authorList, bookList);
 }
-
-export default seedDB()
+export default seedDB
