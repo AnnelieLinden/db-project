@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import authorSchema from "./api/author.js";
 import bookSchema from "./api/book.js";
 import seedDB from "./seedDb.js";
+import { ObjectId } from "bson";
 
 const server = express();
 const port = 3000;
@@ -40,6 +41,7 @@ server.post("/api/author", async (request, response) => {
   try {
     const newAuthor = new Author({
       name: request.body.name,
+      _id: request.body.id,
     });
     const savedAuthor = await newAuthor.save();
     response.status(201).json({
@@ -54,44 +56,59 @@ server.post("/api/author", async (request, response) => {
 //Get all authors
 server.get("/api/author/all", async (request, response) => {
   try {
-    response.status(200).json(await Author.find());
+    const page = parseInt(request.query.page) || 1;
+    const limit = parseInt(request.query.limit) || 5;
+    const allAuthors = await Author.countDocuments();
+    const totalPages = Math.ceil(allAuthors / limit);
+    const authors = await Author.find().limit(limit);
+
+    response.status(200).json({
+      authors,
+      currentPage: page,
+      totalPages,
+      allAuthors,
+    });
   } catch (error) {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
 //Get all books
-server.get( "/api/book/all", async ( req, res ) => {
+server.get("/api/book/all", async (request, response) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 5
+    const page = parseInt(request.query.page) || 1;
+    const limit = parseInt(request.query.limit) || 5;
     const allBooks = await Book.countDocuments();
     const totalPages = Math.ceil(allBooks / limit);
     const books = await Book.find().limit(limit);
 
-    res.status(200).json({
+    response.status(200).json({
       books,
       currentPage: page,
       totalPages,
-      allBooks
+      allBooks,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Ett fel inträffade", error });
+    response.status(500).json({ message: "Ett fel inträffade", error });
   }
 });
 //Get a author by Id
 server.get("/api/author/:id", async (request, response) => {
   if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
-    response.status(400).json({ message: "Felaktigt id" });
+    return response.status(400).json({ message: "Felaktigt id" });
   }
   try {
-    const author = await Author.findById(request.params.id, request.query.fields);
+    const author = await Author.findById(
+      request.params.id,
+      request.query.fields
+    );
     if (!author) {
-      return res.status(404).json({ message: "Användare hittades inte" });
+      return response.status(404).json({ message: "Användare hittades inte" });
     }
-    response.json(author);
+    return response.json(author);
   } catch (error) {
-    response.status(500).json({ message: "Något gick fel", error: error });
+    console.log(error)
+    return response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
 //Get a book with fields
@@ -112,66 +129,68 @@ server.get("/api/book/:id", async (request, response) => {
     });
   }
 });
-server.put("/api/author/:id", async (req, res) => {
+//update author
+server.put("/api/author/:id", async (request, response) => {
   try {
     const updatedAuthor = await Author.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+      request.params.id,
+      request.body,
       {
         new: true,
       }
     );
     if (!updatedAuthor) {
-      return res.status(404).json({ message: "Användare hittades inte" });
+      return response.status(404).json({ message: "Användare hittades inte" });
     }
-    res.json(updatedAuthor);
+    response.json(updatedAuthor);
   } catch (error) {
-    res.status(500).json({
+    response.status(500).json({
       message: "Ett fel uppstod på servern vid uppdatering av användare.",
     });
   }
 });
-server.put("/api/book/:id", async (req, res) => {
+//update book
+server.put("/api/book/:id", async (request, response) => {
   try {
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedBook = await Book.findByIdAndUpdate(request.params.id, request.body, {
       new: true,
     });
     if (!updatedBook) {
-      return res.status(404).json({ message: "Användare hittades inte" });
+      return response.status(404).json({ message: "Användare hittades inte" });
     }
-    res.json(updatedBook);
+    response.json(updatedBook);
   } catch (error) {
-    res.status(500).json({
+    response.status(500).json({
       message: "Ett fel uppstod på servern vid uppdatering av användare.",
     });
   }
 });
-
-server.delete("/api/book/:id", async (req, res) => {
+//delete book
+server.delete("/api/book/:id", async (request, response) => {
   try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    const deletedBook = await Book.findByIdAndDelete(request.params.id);
     if (!deletedBook) {
-      return res.status(404).json({ message: "Användaren hittades inte" });
+      return response.status(404).json({ message: "Boken hittades inte" });
     }
 
-    res.json({ message: "Användaren har raderats!" });
+    response.status(204).json({ message: "Boken har raderats!" });
   } catch (error) {
-    res.status(500).json({
-      message: "Ett fel uppstod på servern vid radering av användare.",
+    response.status(500).json({
+      message: "Ett fel uppstod på servern.",
     });
   }
 });
-
-server.delete("/api/author/:id", async (req, res) => {
+//delete
+server.delete("/api/author/:id", async (request, response) => {
   try {
-    const deletedAuthor = await Author.findByIdAndDelete(req.params.id);
+    const deletedAuthor = await Author.findByIdAndDelete(request.params.id);
     if (!deletedAuthor) {
-      return res.status(404).json({ message: "Användaren hittades inte" });
+      return response.status(404).json({ message: "författaren hittades inte" });
     }
 
-    res.json({ message: "Användaren har raderats!" }); // Bekräftelse på att användaren har raderats.
+    response.status(204).json({ message: "författaren har raderats!" });
   } catch (error) {
-    res.status(500).json({
+    response.status(500).json({
       message: "Ett fel uppstod på servern vid radering av användare.",
     });
   }
