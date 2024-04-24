@@ -5,9 +5,9 @@ authors but also change or delete them.
 
 ## Setup
 Download the repository. Open with Visual Studio Code. 
-Find the file server.js. At the very bottom of the file you can find where 
-to enter your own mongoDB link. You need to to the same
-thing again at row 13 in seedDB.js
+Find the file ```server.js.``` At the very bottom of the file you can find where 
+to enter your own mongoDB link. You need to the same
+thing again at row 13 in ```seedDB.js```
 ```
 mongoose.connect("link here")
 ``` 
@@ -20,8 +20,8 @@ node server.js //This starts the server. The terminal should say Listening on po
 Now you can get started with the fun parts!
 
 
-## Documentation
-## Post
+# Documentation
+### Post
 To post a new author in postman you use the url 
 ```http://localhost:3000/api/author```
 
@@ -48,9 +48,8 @@ To post a new book you enter the url
 }
 ```
 Same thing as with authors, you can see and change my example in body to your own book. 
-To see the object with a get request:
 
-## Get 
+### Get 
 To list objects enter url  
 ```
 http://localhost:3000/api/author/all
@@ -80,13 +79,13 @@ http://localhost:3000/api/book/662537ebae19c3093a98b485?fields=isbn
 ```
 With author you get the entire object anyway since it only has id and name, therefore meningless in this regard.  
 
-## Put
+### Put
 
 By entering ```http://localhost:3000/api/book/ Enter book´s ObjectId here``` in a put request url, you can update the book´s information. 
 In the body of the request you need to fill in the details you want to change. 
 You can update an author´s name too if you would like ```http://localhost:3000/api/author/ Enter authors´s ObjectId here``` 
 
-## Delete
+### Delete
 
 To delete a book or author you simply enter one of the urls below in a delete request  
 ```
