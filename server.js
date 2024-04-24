@@ -143,7 +143,7 @@ server.put("/api/author/:id", async (request, response) => {
   try {
     const updatedAuthor = await Author.findByIdAndUpdate(
       request.params.id,
-      request.body,
+      request.body.name,
       {
         new: true,
       }
