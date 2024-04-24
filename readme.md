@@ -83,10 +83,8 @@ With author you get the entire object anyway since it only has id and name, ther
 ## Put
 
 By entering ```http://localhost:3000/api/book/ Enter book´s ObjectId here``` in a put request url, you can update the book´s information. 
-In the body of the request you need to fill in the details you want to change. After you sent the request Postman will however tell you 
-that one of the tests failed since the it is hardcoded. It should probably have been written in another way. 
-You can update an author´s name too if you would like ```http://localhost:3000/api/author/ Enter authors´s ObjectId here``` but postman holds 
-the same test which will fail if the name does not fit the hardcoded one.
+In the body of the request you need to fill in the details you want to change. 
+You can update an author´s name too if you would like ```http://localhost:3000/api/author/ Enter authors´s ObjectId here``` 
 
 ## Delete
 
