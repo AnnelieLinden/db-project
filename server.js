@@ -4,11 +4,19 @@ import authorSchema from "./api/author.js";
 import bookSchema from "./api/book.js";
 import seedDB from "./seedDb.js";
 import { ObjectId } from "bson";
+import rateLimit from "express-rate-limit";
 
 const server = express();
 const port = 3000;
 server.use(express.json());
 
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again later"
+});
+
+server.use("/api", limiter);
 const Author = mongoose.model("Author", authorSchema);
 const Book = mongoose.model("Book", bookSchema);
 seedDB();
@@ -38,6 +46,7 @@ server.post("/api/book", async (request, response) => {
 });
 //add author
 server.post("/api/author", async (request, response) => {
+
   try {
     const newAuthor = new Author({
       name: request.body.name,
@@ -195,6 +204,7 @@ server.delete("/api/author/:id", async (request, response) => {
     });
   }
 });
+
 
 mongoose.connect(
   "mongodb+srv://annelielinden90:Kaeh14281710@cluster0.spbanxe.mongodb.net/"

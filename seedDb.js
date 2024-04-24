@@ -12,7 +12,7 @@ async function seedDB() {
     mongoose.connect(
       "mongodb+srv://annelielinden90:Kaeh14281710@cluster0.spbanxe.mongodb.net/"
     );
-    await createBooks(2);
+    await createBooks(1);
   } catch (error) {
     console.log(`Errormessage: ${error}`);
   }
@@ -21,7 +21,7 @@ async function seedDB() {
 async function createBooks(amount) {
   const authorList = [];
   const bookList = [];
-  const genreList = ['Roman', 'Skräck', 'Barnbok', 'Dokumentär', 'Självbiografi', 'Skönlitteratur', 'Faktabok'];
+  const genre = ['Roman', 'Skräck', 'Barnbok', 'Dokumentär', 'Självbiografi', 'Skönlitteratur', 'Faktabok'];
   const languageList = ['Svenska', 'Engelska', 'Tyska', 'Danska','Norska'];
   for (let i = 0; i < amount; i++) {
     const newAuthor = new Author({
@@ -32,7 +32,7 @@ async function createBooks(amount) {
     const newBook = new Book({
       title: faker.lorem.words({ min: 1, max: 7 }),
       isbn: faker.string.numeric(10),
-      genre: genreList[faker.number.int(6)],
+      genre: genre[faker.number.int(6)],
       grade: faker.number.int({ min: 1, max: 5 }),
       author: newAuthor,
       plot: faker.lorem.paragraph(1),
