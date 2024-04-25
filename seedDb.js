@@ -12,7 +12,7 @@ async function seedDB() {
     mongoose.connect(
       "mongodb+srv://annelielinden90:Kaeh14281710@cluster0.spbanxe.mongodb.net/"
     );
-    await createBooks(1);
+    await createBooks(10);
   } catch (error) {
     console.log(`Errormessage: ${error}`);
   }

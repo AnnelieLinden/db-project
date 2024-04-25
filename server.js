@@ -20,7 +20,7 @@ server.use("/api", limiter);
 const Author = mongoose.model("Author", authorSchema);
 const Book = mongoose.model("Book", bookSchema);
 seedDB();
-//add book
+
 server.post("/api/book", async (request, response) => {
   try {
     const newBook = new Book({
@@ -44,7 +44,7 @@ server.post("/api/book", async (request, response) => {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
-//add author
+
 server.post("/api/author", async (request, response) => {
 
   try {
@@ -62,7 +62,7 @@ server.post("/api/author", async (request, response) => {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
-//Get all authors
+
 server.get("/api/author/all", async (request, response) => {
   try {
     const page = parseInt(request.query.page) || 1;
@@ -81,7 +81,7 @@ server.get("/api/author/all", async (request, response) => {
     response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
-//Get all books
+
 server.get("/api/book/all", async (request, response) => {
   try {
     const page = parseInt(request.query.page) || 1;
@@ -101,7 +101,7 @@ server.get("/api/book/all", async (request, response) => {
     response.status(500).json({ message: "Ett fel inträffade", error });
   }
 });
-//Get a author by Id
+
 server.get("/api/author/:id", async (request, response) => {
   if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
     return response.status(400).json({ message: "Felaktigt id" });
@@ -120,7 +120,7 @@ server.get("/api/author/:id", async (request, response) => {
     return response.status(500).json({ message: "Något gick fel", error: error });
   }
 });
-//Get a book with fields
+
 server.get("/api/book/:id", async (request, response) => {
   if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
     response.status(400).json({ message: "Felaktigt id" });
@@ -138,7 +138,7 @@ server.get("/api/book/:id", async (request, response) => {
     });
   }
 });
-//update author
+
 server.put("/api/author/:id", async (request, response) => {
   try {
     const updatedAuthor = await Author.findByIdAndUpdate(
@@ -158,7 +158,7 @@ server.put("/api/author/:id", async (request, response) => {
     });
   }
 });
-//update book
+
 server.put("/api/book/:id", async (request, response) => {
   try {
     const updatedBook = await Book.findByIdAndUpdate(request.params.id, request.body, {
@@ -174,7 +174,7 @@ server.put("/api/book/:id", async (request, response) => {
     });
   }
 });
-//delete book
+
 server.delete("/api/book/:id", async (request, response) => {
   try {
     const deletedBook = await Book.findByIdAndDelete(request.params.id);
@@ -189,7 +189,7 @@ server.delete("/api/book/:id", async (request, response) => {
     });
   }
 });
-//delete
+
 server.delete("/api/author/:id", async (request, response) => {
   try {
     const deletedAuthor = await Author.findByIdAndDelete(request.params.id);
