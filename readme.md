@@ -19,6 +19,8 @@ node server.js //This starts the server. The terminal should say Listening on po
 ```
 Now you can get started with the fun parts!
 
+My postman project: https://www.postman.com/aneriil/workspace/book-and-authors-api
+
 
 # Documentation
 ### Post
