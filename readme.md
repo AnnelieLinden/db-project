@@ -24,7 +24,6 @@ Now you can get started with the fun parts!
 
 My postman project: https://www.postman.com/aneriil/workspace/book-and-authors-api/collection/33840972-3eb9f7dc-aaad-415c-a665-d527f0c8c9f1?action=share&creator=33840972
 
-
 # Documentation
 ### Post
 To post a new author in postman you use the url 
@@ -69,7 +68,7 @@ http://localhost:3000/api/author/6627a326196509581d5b9b35
 http://localhost:3000/api/book/662537ebae19c3093a98b485
 ```
 
-You can also choose to use fields. With it you can find a book by it is id and choose from th many fields a book has:
+You can also choose to use fields. With it you can find a book by its id and choose from the many fields a book has:
 ```
 http://localhost:3000/api/book/662537ebae19c3093a98b485?fields=title
 http://localhost:3000/api/book/662537ebae19c3093a98b485?fields=year
