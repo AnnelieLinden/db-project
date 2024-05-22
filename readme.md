@@ -3,6 +3,8 @@ This REST API handles books and authors where you can search on a book to see
 all information about it or just a piece of it. You can post new books and 
 authors but also change or delete them. 
 
+My ambition with this project is the grade VG.
+
 ## Setup
 Download the repository. Open with Visual Studio Code. 
 Find the file ```server.js.``` At the very bottom of the file you can find where 
@@ -15,11 +17,12 @@ In the upper menues, find Terminal and press new terminal.
 There you need to enter:
 ```
 npm install-y //This installs the defined libraries
+node seedDB.js //To seed the database with 10 seeds
 node server.js //This starts the server. The terminal should say Listening on port http://localhost:3000
 ```
 Now you can get started with the fun parts!
 
-My postman project: https://www.postman.com/aneriil/workspace/book-and-authors-api
+My postman project: https://www.postman.com/aneriil/workspace/book-and-authors-api/collection/33840972-3eb9f7dc-aaad-415c-a665-d527f0c8c9f1?action=share&creator=33840972
 
 
 # Documentation

@@ -46,4 +46,4 @@ async function createBooks(amount) {
   }
   return (authorList, bookList);
 }
-export default seedDB
+seedDB()

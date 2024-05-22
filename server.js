@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authorSchema from "./api/author.js";
 import bookSchema from "./api/book.js";
-import seedDB from "./seedDb.js";
+
 import { ObjectId } from "bson";
 import rateLimit from "express-rate-limit";
 
@@ -11,7 +11,7 @@ const port = 3000;
 server.use(express.json());
 
 const limiter = rateLimit({
-  max: 10000,
+  max: 100,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again later"
 });
@@ -19,7 +19,7 @@ const limiter = rateLimit({
 server.use("/api", limiter);
 const Author = mongoose.model("Author", authorSchema);
 const Book = mongoose.model("Book", bookSchema);
-seedDB();
+
 
 server.post("/api/book", async (request, response) => {
   try {
